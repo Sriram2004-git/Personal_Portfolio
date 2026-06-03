@@ -30,7 +30,7 @@ export function AIAssistantSection() {
                 <span className="gradient-text-purple">AI</span>
               </h2>
               <p className="text-text-secondary leading-relaxed">
-                Powered by the <span className="text-text-primary font-mono">gpt-oss:120b</span> model via Ollama,
+                Powered by <span className="text-text-primary font-mono">gemini-3-flash-preview</span> via Google AI Studio,
                 this assistant knows everything about my skills, projects, and experience.
                 Ask it anything a recruiter or engineer would want to know.
               </p>
