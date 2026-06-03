@@ -20,6 +20,14 @@ export async function POST(req: Request) {
   const headers: HeadersInit = { 'Content-Type': 'application/json' }
   if (apiKey) headers['Authorization'] = `Bearer ${apiKey}`
 
+  // Reject localhost URLs in production to give a clear error instead of a timeout
+  if (process.env.NODE_ENV === 'production' && ollamaUrl.includes('localhost')) {
+    return new Response(
+      'The AI service is not configured for production. Please set OLLAMA_API_URL to your cloud endpoint in Vercel environment variables.',
+      { status: 503 }
+    )
+  }
+
   try {
     const response = await fetch(`${ollamaUrl}/api/chat`, {
       method: 'POST',
@@ -29,6 +37,7 @@ export async function POST(req: Request) {
         messages: fullMessages,
         stream: true,
       }),
+      signal: AbortSignal.timeout(30000),
     })
 
     if (!response.ok || !response.body) {
