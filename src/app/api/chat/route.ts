@@ -1,6 +1,6 @@
 import { SRIRAAM_SYSTEM_PROMPT } from '@/data/aiQA'
 
-interface OllamaMessage {
+interface Message {
   role: 'system' | 'user' | 'assistant'
   content: string
 }
@@ -8,39 +8,39 @@ interface OllamaMessage {
 export async function POST(req: Request) {
   const { messages } = await req.json()
 
-  const ollamaUrl = process.env.OLLAMA_API_URL ?? 'http://localhost:11434'
-  const model = process.env.OLLAMA_MODEL ?? 'gpt-oss:120b-cloud'
-  const apiKey = process.env.OLLAMA_API_KEY
+  const apiKey = process.env.GOOGLE_AI_API_KEY
+  const model = process.env.GOOGLE_AI_MODEL ?? 'gemini-2.0-flash'
 
-  const fullMessages: OllamaMessage[] = [
+  if (!apiKey) {
+    return new Response('AI service is not configured. GOOGLE_AI_API_KEY is missing.', { status: 503 })
+  }
+
+  const fullMessages: Message[] = [
     { role: 'system', content: SRIRAAM_SYSTEM_PROMPT },
     ...messages,
   ]
 
-  const headers: HeadersInit = { 'Content-Type': 'application/json' }
-  if (apiKey) headers['Authorization'] = `Bearer ${apiKey}`
-
-  // Reject localhost URLs in production to give a clear error instead of a timeout
-  if (process.env.NODE_ENV === 'production' && ollamaUrl.includes('localhost')) {
-    return new Response(
-      'The AI service is not configured for production. Please set OLLAMA_API_URL to your cloud endpoint in Vercel environment variables.',
-      { status: 503 }
-    )
-  }
-
   try {
-    const response = await fetch(`${ollamaUrl}/api/chat`, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify({
-        model,
-        messages: fullMessages,
-        stream: true,
-      }),
-      signal: AbortSignal.timeout(30000),
-    })
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/openai/chat/completions`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify({
+          model,
+          messages: fullMessages,
+          stream: true,
+        }),
+        signal: AbortSignal.timeout(30000),
+      }
+    )
 
     if (!response.ok || !response.body) {
+      const err = await response.text()
+      console.error('Google AI error:', err)
       return new Response('AI service unavailable', { status: 503 })
     }
 
@@ -57,16 +57,15 @@ export async function POST(req: Request) {
             const chunk = decoder.decode(value, { stream: true })
             const lines = chunk.split('\n').filter(Boolean)
             for (const line of lines) {
+              if (!line.startsWith('data: ')) continue
+              const data = line.slice(6).trim()
+              if (data === '[DONE]') { controller.close(); return }
               try {
-                const parsed = JSON.parse(line)
-                const token = parsed?.message?.content ?? ''
+                const parsed = JSON.parse(data)
+                const token = parsed?.choices?.[0]?.delta?.content ?? ''
                 if (token) controller.enqueue(encoder.encode(token))
-                if (parsed?.done) {
-                  controller.close()
-                  return
-                }
               } catch {
-                // skip malformed JSON lines
+                // skip malformed SSE lines
               }
             }
           }
