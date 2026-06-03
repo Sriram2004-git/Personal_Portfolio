@@ -1,0 +1,145 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-inter: 'Inter', sans-serif;
+  --font-jetbrains: 'JetBrains Mono', monospace;
+  --font-space-grotesk: 'Space Grotesk', sans-serif;
+
+  /* Dark mode defaults */
+  --bg-void: #020408;
+  --bg-dark: #050B12;
+  --bg-surface: #0A1628;
+  --bg-elevated: #0F2040;
+  --text-primary: #F1F5F9;
+  --text-secondary: #94A3B8;
+  --text-muted: #475569;
+  --glass-bg: rgba(10, 22, 40, 0.7);
+  --glass-border: rgba(14, 165, 233, 0.12);
+
+  --electric-blue: #0EA5E9;
+  --ai-purple: #8B5CF6;
+  --neon-cyan: #06B6D4;
+  --matrix-green: #10B981;
+}
+
+/* Light mode — applied when next-themes sets class="light" on <html> */
+html.light {
+  --bg-void: #f0f4f8;
+  --bg-dark: #e8eef4;
+  --bg-surface: #ffffff;
+  --bg-elevated: #dde6f0;
+  --text-primary: #0f172a;
+  --text-secondary: #334155;
+  --text-muted: #64748b;
+  --glass-bg: rgba(255, 255, 255, 0.75);
+  --glass-border: rgba(14, 165, 233, 0.25);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--bg-dark);
+    color: var(--text-primary);
+    @apply antialiased;
+    font-family: var(--font-inter), system-ui, sans-serif;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--bg-dark);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(14, 165, 233, 0.3);
+    border-radius: 3px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(14, 165, 233, 0.6);
+  }
+
+  ::selection {
+    background: rgba(14, 165, 233, 0.3);
+    color: #f1f5f9;
+  }
+}
+
+@layer utilities {
+  .glass {
+    backdrop-filter: blur(12px);
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+  }
+
+  .glass-card {
+    backdrop-filter: blur(8px);
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(14, 165, 233, 0.08);
+  }
+
+  html.light .glass-card {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08), 0 1px 0 rgba(14, 165, 233, 0.15);
+  }
+
+  .glow-text {
+    text-shadow: 0 0 20px rgba(14, 165, 233, 0.5);
+  }
+
+  .gradient-text {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(135deg, #0EA5E9 0%, #8B5CF6 50%, #06B6D4 100%);
+  }
+
+  .gradient-text-purple {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(135deg, #8B5CF6 0%, #06B6D4 100%);
+  }
+
+  .section-padding {
+    @apply py-20 md:py-28 px-6 md:px-12 lg:px-24;
+  }
+
+  .section-heading {
+    @apply text-3xl md:text-4xl lg:text-5xl font-display font-bold;
+  }
+
+  .card-hover-effect {
+    @apply transition-all duration-300;
+  }
+  .card-hover-effect:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.6), 0 0 30px rgba(14, 165, 233, 0.2), inset 0 1px 0 rgba(14, 165, 233, 0.15);
+  }
+
+  .cursor-blink::after {
+    content: '|';
+    animation: cursorBlink 1s step-end infinite;
+    color: #0EA5E9;
+    margin-left: 2px;
+  }
+
+  @keyframes cursorBlink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+  /* Badge orbit: outer element revolves around the circle */
+  @keyframes orbitOuter {
+    from { transform: rotate(0deg) translateX(170px); }
+    to   { transform: rotate(360deg) translateX(170px); }
+  }
+
+  /* Inner element counter-rotates so text stays upright */
+  @keyframes orbitCounter {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(-360deg); }
+  }
+}
