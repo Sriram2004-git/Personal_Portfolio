@@ -63,7 +63,7 @@ export const PROJECTS: Project[] = [
     stack: ['Claude AI (Sonnet 4)', 'Anthropic API', 'Web Search Tool', 'React Artifact', 'Microsoft 365 MCP', 'localStorage'],
     category: 'AI / Automation',
     color: 'green',
-    demoUrl: 'https://docs.google.com/presentation/d/1_32BugOlQPLR7AMq-W9btUn54_fDmnyw/edit?usp=sharing&ouid=116519409516266634130&rtpof=true&sd=true',
+    demoUrl: 'https://claude.ai/public/artifacts/d5dd0748-b683-4275-b97e-a5d353f4ca9d',
     featured: true,
     freelance: true,
   },
