@@ -7,7 +7,7 @@ import { METRICS } from '@/data/metrics'
 import { staggerContainer, fadeInUp } from '@/lib/animations'
 
 export function MetricsSection() {
-  const { ref, inView } = useInView({ threshold: 0.1, triggerOnce: true })
+  const { ref, inView } = useInView({ threshold: 0.1, triggerOnce: false })
 
   return (
     <section ref={ref} className="py-20 px-6 bg-bg-void relative overflow-hidden">

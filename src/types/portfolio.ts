@@ -28,7 +28,7 @@ export interface RadarDataPoint {
 
 export interface TimelineEntry {
   id: string
-  type: 'internship' | 'education' | 'certification' | 'freelance'
+  type: 'internship' | 'education' | 'certification' | 'freelance' | 'project'
   title: string
   organization: string
   period: string
@@ -39,6 +39,7 @@ export interface TimelineEntry {
   description: string[]
   skills: string[]
   certificateUrl?: string
+  countdownTo?: string
   color: 'blue' | 'purple' | 'green' | 'cyan'
 }
 

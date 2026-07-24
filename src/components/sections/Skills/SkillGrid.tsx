@@ -55,7 +55,7 @@ export function SkillGrid() {
                     <motion.div
                       initial={{ width: 0 }}
                       whileInView={{ width: `${skill.level}%` }}
-                      viewport={{ once: true }}
+                      viewport={{ once: false }}
                       transition={{ duration: 1, delay: 0.2, ease: 'easeOut' }}
                       className="h-full rounded-full"
                       style={{

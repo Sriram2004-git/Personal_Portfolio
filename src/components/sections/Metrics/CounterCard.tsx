@@ -22,7 +22,7 @@ const COLOR_MAP = {
 
 export function CounterCard({ metric }: { metric: MetricItem }) {
   const [mounted, setMounted] = useState(false)
-  const { ref, inView } = useInView({ threshold: 0.3, triggerOnce: true })
+  const { ref, inView } = useInView({ threshold: 0.3, triggerOnce: false })
   const colors = COLOR_MAP[metric.color]
   const Icon = ICON_MAP[metric.icon as keyof typeof ICON_MAP] ?? Cpu
 

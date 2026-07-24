@@ -108,8 +108,8 @@ export function HeroSection() {
             {/* Orbiting badges — revolve along the circular border */}
             <div className="absolute inset-0 pointer-events-none z-20">
               {([
-                { label: 'RAG Engineer', color: 'text-electric-blue', delay: '0s' },
-                { label: 'LLM Dev', color: 'text-ai-purple-400', delay: '-30s' },
+                { label: 'LLM Ops', color: 'text-electric-blue', delay: '0s' },
+                { label: 'AI SaaS App', color: 'text-ai-purple-400', delay: '-30s' },
                 { label: 'Automation', color: 'text-neon-cyan-400', delay: '-60s' },
               ] as const).map(({ label, color, delay }) => (
                 <div key={label} className="absolute inset-0 flex items-center justify-center">

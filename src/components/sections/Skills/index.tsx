@@ -12,7 +12,7 @@ const SkillRadar = dynamic(() => import('./RadarChart').then((m) => ({ default: 
 })
 
 export function SkillsSection() {
-  const { ref, inView } = useInView({ threshold: 0.1, triggerOnce: true })
+  const { ref, inView } = useInView({ threshold: 0.1, triggerOnce: false })
 
   return (
     <section id="skills" ref={ref} className="section-padding bg-bg-dark relative overflow-hidden">
