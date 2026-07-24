@@ -13,6 +13,7 @@ import { ExperienceSection } from '@/components/sections/Experience'
 import { GitHubSection } from '@/components/sections/GitHub'
 import { ResumeSection } from '@/components/sections/Resume'
 import { ContactSection } from '@/components/sections/Contact'
+import { ServicesSection } from '@/components/sections/Services'
 
 export default function HomePage() {
   useEffect(() => {
@@ -59,6 +60,7 @@ export default function HomePage() {
         <ExperienceSection />
         <GitHubSection />
         <ResumeSection />
+        <ServicesSection />
         <ContactSection />
       </main>
       <Footer />

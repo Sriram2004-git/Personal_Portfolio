@@ -2,7 +2,8 @@
 
 import { motion } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
-import { Briefcase, GraduationCap, ExternalLink, Zap } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { Briefcase, GraduationCap, ExternalLink, Zap, Rocket } from 'lucide-react'
 import { TIMELINE } from '@/data/experience'
 
 export function Timeline() {
@@ -32,7 +33,7 @@ function TimelineEntry({
   idx: number
   isLeft: boolean
 }) {
-  const { ref, inView } = useInView({ threshold: 0.2, triggerOnce: true })
+  const { ref, inView } = useInView({ threshold: 0.2, triggerOnce: false })
 
   const colorClass = {
     blue:   { dot: 'bg-electric-blue',  border: 'border-electric-blue/30',  text: 'text-electric-blue',  icon: 'text-electric-blue'  },
@@ -41,14 +42,14 @@ function TimelineEntry({
     cyan:   { dot: 'bg-neon-cyan',      border: 'border-neon-cyan/40',      text: 'text-neon-cyan-400',  icon: 'text-neon-cyan-400'  },
   }[entry.color]
 
-  const Icon = entry.type === 'freelance' ? Zap : entry.type === 'internship' ? Briefcase : GraduationCap
+  const Icon = entry.type === 'freelance' ? Zap : entry.type === 'internship' ? Briefcase : entry.type === 'project' ? Rocket : GraduationCap
 
   return (
     <div ref={ref} className={`relative flex items-start gap-6 ${isLeft ? 'md:flex-row' : 'md:flex-row-reverse'} flex-row pl-10 md:pl-0`}>
       {/* Content */}
       <motion.div
         initial={{ opacity: 0, x: isLeft ? -40 : 40 }}
-        animate={inView ? { opacity: 1, x: 0 } : {}}
+        animate={inView ? { opacity: 1, x: 0 } : { opacity: 0, x: isLeft ? -40 : 40 }}
         transition={{ duration: 0.6, delay: idx * 0.1, ease: [0.22, 1, 0.36, 1] }}
         className={`w-full md:w-5/12 glass-card p-5 rounded-xl border ${colorClass.border}`}
       >
@@ -56,6 +57,12 @@ function TimelineEntry({
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <span className={`text-xs font-mono ${colorClass.text} tracking-wider`}>{entry.period}</span>
+            {entry.type === 'project' && (
+              <span className="flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-ai-purple/15 border border-ai-purple/30 text-ai-purple-400 font-mono">
+                <span className="w-1.5 h-1.5 rounded-full bg-ai-purple animate-pulse" />
+                Ongoing Project
+              </span>
+            )}
             {entry.isPresent && (
               <span className="flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-neon-cyan/15 border border-neon-cyan/30 text-neon-cyan-400 font-mono">
                 <span className="w-1.5 h-1.5 rounded-full bg-neon-cyan animate-pulse" />
@@ -64,7 +71,7 @@ function TimelineEntry({
             )}
           </div>
           {entry.mode && (
-            <span className="text-xs px-2 py-0.5 rounded-full bg-bg-elevated border border-white/10 text-text-muted">
+            <span className="text-xs px-2 py-0.5 rounded-full bg-bg-elevated border border-white/25 text-text-secondary">
               {entry.mode}
             </span>
           )}
@@ -73,51 +80,45 @@ function TimelineEntry({
         <h3 className="font-display font-bold text-text-primary text-base mb-1">{entry.title}</h3>
         <p className={`text-sm font-medium mb-3 ${colorClass.text}`}>{entry.organization}</p>
 
-        <ul className="flex flex-col gap-1.5 mb-4">
-          {entry.description.map((d, i) => (
-            <li key={i} className="text-text-muted text-xs leading-relaxed flex gap-2">
-              <span className={colorClass.text + ' mt-1 flex-shrink-0'}>›</span>
-              {d}
-            </li>
-          ))}
-        </ul>
+        {entry.countdownTo ? (
+          <CountdownTimer targetDate={entry.countdownTo} colorClass={colorClass.text} />
+        ) : (
+          <>
+            <ul className="flex flex-col gap-1.5 mb-4">
+              {entry.description.map((d, i) => (
+                <li key={i} className="text-text-muted text-xs leading-relaxed flex gap-2">
+                  <span className={colorClass.text + ' mt-1 flex-shrink-0'}>›</span>
+                  {d}
+                </li>
+              ))}
+            </ul>
 
-        {/* Skills */}
-        <div className="flex flex-wrap gap-1.5 mb-3">
-          {entry.skills.map((skill) => (
-            <span key={skill} className="text-xs px-2 py-0.5 rounded-md bg-bg-elevated border border-white/8 text-text-muted">
-              {skill}
-            </span>
-          ))}
-        </div>
+            <div className="flex flex-wrap gap-1.5 mb-3">
+              {entry.skills.map((skill) => (
+                <span key={skill} className="text-xs px-2 py-0.5 rounded-md bg-bg-elevated border border-white/8 text-text-muted">
+                  {skill}
+                </span>
+              ))}
+            </div>
 
-        {/* Links row */}
-        <div className="flex items-center gap-4 flex-wrap">
-        {entry.websiteUrl && (
-          <a
-            href={entry.websiteUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={`inline-flex items-center gap-1.5 text-xs ${colorClass.text} hover:opacity-80 transition-opacity`}
-          >
-            <ExternalLink size={11} />
-            {entry.organization}
-          </a>
+            <div className="flex items-center gap-4 flex-wrap">
+              {entry.websiteUrl && (
+                <a href={entry.websiteUrl} target="_blank" rel="noopener noreferrer"
+                  className={`inline-flex items-center gap-1.5 text-xs ${colorClass.text} hover:opacity-80 transition-opacity`}>
+                  <ExternalLink size={11} />
+                  {entry.organization}
+                </a>
+              )}
+              {entry.certificateUrl && (
+                <a href={entry.certificateUrl} target="_blank" rel="noopener noreferrer"
+                  className={`inline-flex items-center gap-1.5 text-xs ${colorClass.text} hover:opacity-80 transition-opacity`}>
+                  <ExternalLink size={11} />
+                  View Certificate
+                </a>
+              )}
+            </div>
+          </>
         )}
-
-        {/* Certificate link */}
-        {entry.certificateUrl && (
-          <a
-            href={entry.certificateUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={`inline-flex items-center gap-1.5 text-xs ${colorClass.text} hover:opacity-80 transition-opacity`}
-          >
-            <ExternalLink size={11} />
-            View Certificate
-          </a>
-        )}
-        </div>
       </motion.div>
 
       {/* Center dot */}
@@ -129,6 +130,49 @@ function TimelineEntry({
 
       {/* Spacer for opposite side */}
       <div className="hidden md:block w-5/12" />
+    </div>
+  )
+}
+
+function CountdownTimer({ targetDate, colorClass }: { targetDate: string; colorClass: string }) {
+  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 })
+
+  useEffect(() => {
+    function calc() {
+      const diff = new Date(targetDate).getTime() - Date.now()
+      if (diff <= 0) return setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 })
+      setTimeLeft({
+        days: Math.floor(diff / 86400000),
+        hours: Math.floor((diff % 86400000) / 3600000),
+        minutes: Math.floor((diff % 3600000) / 60000),
+        seconds: Math.floor((diff % 60000) / 1000),
+      })
+    }
+    calc()
+    const id = setInterval(calc, 1000)
+    return () => clearInterval(id)
+  }, [targetDate])
+
+  const units = [
+    { label: 'Days', value: timeLeft.days },
+    { label: 'Hrs', value: timeLeft.hours },
+    { label: 'Min', value: timeLeft.minutes },
+    { label: 'Sec', value: timeLeft.seconds },
+  ]
+
+  return (
+    <div className="flex flex-col gap-3 mt-1">
+      <div className="flex gap-2">
+        {units.map(({ label, value }) => (
+          <div key={label} className="flex flex-col items-center gap-1 flex-1">
+            <div className={`w-full text-center font-display font-black text-lg ${colorClass} bg-bg-elevated rounded-lg py-2 tabular-nums`}>
+              {String(value).padStart(2, '0')}
+            </div>
+            <span className="text-text-muted text-[10px] font-mono tracking-wider uppercase">{label}</span>
+          </div>
+        ))}
+      </div>
+      <p className={`text-xs font-mono ${colorClass} opacity-70 tracking-widest text-center`}>— Stay tuned —</p>
     </div>
   )
 }

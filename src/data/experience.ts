@@ -2,14 +2,26 @@ import type { TimelineEntry } from '@/types'
 
 export const TIMELINE: TimelineEntry[] = [
   {
+    id: 'ai-saas',
+    type: 'project',
+    title: 'AI Productivity SaaS Application',
+    organization: 'Personal Project',
+    period: 'Jul 2026',
+    location: 'Remote',
+    countdownTo: '2026-08-08T00:00:00',
+    description: ['Stay tuned.'],
+    skills: [],
+    color: 'purple',
+  },
+  {
     id: 'techslice-freelance',
     type: 'freelance',
     title: 'Workflow Automation Engineer',
     organization: 'TechSlice Solutions',
-    period: '2025 —',
+    period: '2025',
     location: 'Remote',
     mode: 'Freelance',
-    isPresent: true,
+    isPresent: false,
     websiteUrl: 'https://techslicesolutions.com',
     description: [
       'Delivering n8n and Claude-based intelligent automation solutions to TechSlice Solutions, an industrial mechanical parts supplier — streamlining their end-to-end order management workflow.',
