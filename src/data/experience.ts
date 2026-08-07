@@ -8,7 +8,7 @@ export const TIMELINE: TimelineEntry[] = [
     organization: 'Personal Project',
     period: 'Jul 2026',
     location: 'Remote',
-    countdownTo: '2026-08-08T00:00:00',
+    countdownTo: '2026-08-18T00:00:00',
     description: ['Stay tuned.'],
     skills: [],
     color: 'purple',
