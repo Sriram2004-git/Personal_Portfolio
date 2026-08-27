@@ -63,7 +63,7 @@ export const PROJECTS: Project[] = [
     stack: ['Claude AI (Sonnet 4)', 'Anthropic API', 'Web Search Tool', 'React Artifact', 'Microsoft 365 MCP', 'localStorage'],
     category: 'AI / Automation',
     color: 'green',
-    demoUrl: 'https://claude.ai/public/artifacts/d5dd0748-b683-4275-b97e-a5d353f4ca9d',
+    demoUrl: 'https://cutting-tools-lead-generator-and-em.vercel.app/',
     featured: true,
     freelance: true,
   },
